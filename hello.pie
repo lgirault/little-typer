@@ -1,0 +1,143 @@
+#lang pie
+
+
+(claim +
+  (-> Nat Nat
+    Nat))
+(define +
+  (λ (n m)
+    (iter-Nat n
+      m
+      (λ (acc)
+        (add1 acc)) )))
+
+(claim guauss
+  (-> Nat Nat))
+(define guauss
+  (λ (n)
+    (rec-Nat n
+      0
+      (λ (n-1 acc)
+        (+ (add1 n-1) acc))))) 
+
+
+(claim l123
+  (List Nat))
+(define l123
+  (:: 1 (:: 2 (:: 3 nil))))
+
+(claim l456
+  (List Nat))
+(define l456
+  (:: 4 (:: 5 (:: 6 nil))))
+
+
+
+(claim append
+  (Pi ((A U))
+    (-> (List A) (List A)
+      (List A))))
+(define append
+  (λ (A)
+    (λ (l1 l2)
+      (rec-List l1
+        l2
+        (λ (hd tl acc)
+          (:: hd acc))))))
+
+
+(claim snoc
+  (Pi ((A U))
+    (-> (List A) A
+      (List A))))
+(define snoc
+  (λ (A)
+    (λ (l a)
+      (append A l (:: a nil)))))
+
+(claim concat
+  (Pi ((A U))
+    (-> (List A) (List A)
+      (List A))))
+(define concat
+  (λ (A)
+    (λ (l1 l2)
+      (rec-List l2
+        l1
+        (λ (hd tl acc)
+          (snoc A acc hd))))))
+
+;;; (snoc (snoc (snoc (list 1 2 3) 6) 5) 4)
+
+(claim reverse
+  (Pi ((A U))
+    (-> (List A)
+      (List A))))
+
+(claim concat-reverse
+  (Pi ((A U))
+    (-> (List A) (List A)
+      (List A))))
+;(define concat-reverse
+;  (λ (A)
+;    (λ (l1 l2)
+;      (rec-List l1
+
+
+(claim peas
+  (Pi ((n Nat))
+       (Vec Atom n)))
+
+(define peas
+  (λ (n)
+    (ind-Nat n
+      (λ (v)
+        (Vec Atom v))
+      vecnil
+      (λ (n acc)
+        (vec:: 'pea acc)))))
+
+
+
+(claim mot-concat-v
+  (Pi ((A U)
+       (n Nat))
+  (-> Nat
+    U)))
+(define mot-concat-v
+  (λ (A n m)
+      (Vec A (+ m n))))
+
+(claim step-concat-v
+  (Pi ((A U)
+       (n Nat)
+       (a A)
+       (m-1 Nat))
+    (-> (mot-concat-v A n m-1)
+        (mot-concat-v A n (add1 m-1)))))
+;(define step-concat-v
+;  (λ (A)
+;    TODO))
+  
+(claim concat-v
+  (Pi ((A U)
+       (n Nat) (m Nat))
+    (-> (Vec A n) (Vec A m)
+      (Vec A (+ n m) ))))
+(define concat-v
+  (λ (A n m)
+    (λ (vn vm)
+      (ind-Nat n
+        (mot-concat-v A m)
+        vm
+        TODO ))))
+
+;(define concat-vhttps://duckduckgo.com/?q=liseuse&t=ffab&ia=web
+;  (λ (A n m)
+;    (λ (vn vm)
+;      (ind-Nat n
+;        (mot-concat-v A m)
+;        vm
+;        (step-concat-v A m (head vn))))))
+        
+
